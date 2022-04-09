@@ -1,0 +1,7 @@
+GPR
+```
+iterations: 25
+Truncated_SVD = False
+```
+Time(subset) = 9.97 hours
+Time (no-subset)=

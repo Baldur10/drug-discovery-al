@@ -1,0 +1,20 @@
+{
+    "iterations": 25,
+    "epochs": 25,
+    "model" : ["BasicNNR()"],
+    "optimizer" : "Adam",
+    "criterion" : "MSELoss",
+    "learning_rate" : [1e-4],
+    "acquisition": ["random","equivalent","product_sampling"],
+    "param_grid": {
+        "n_estimators" : [10,25,100],
+        "criterion" : ["squared_error"],
+        "max_depth" : [10,15,20],
+        "min_samples_leaf" : [2,4,6]
+    },
+    "params" : {
+        "n_estimators" : 100,
+        "criterion" : "squared_error",
+        "min_samples_leaf" : 3
+    }
+}

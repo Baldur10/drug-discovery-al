@@ -1,0 +1,21 @@
+{
+    "iterations": 25,
+    "alpha" : 1e-4,
+    "kernel" : ["Matern()"],
+    "acquisition": ["max_UCB","max_PI","max_EI"],
+    "matern_params": {
+        "length_scale" : 1.0,
+        "length_scale_bounds" : {
+        "low" : 1e-05,
+        "high" : 1e08
+        },
+        "nu" : 1.5
+    }, 
+    "rbf_params": {
+        "length_scale" : 1.0,
+        "length_scale_bounds" : {
+        "low" : 1e-05,
+        "high" : 1e08
+        }
+    }
+}

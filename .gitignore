@@ -1,0 +1,8 @@
+# Ignore superfluous models
+models/GPR_morgan
+models/RFR_morgan
+models/NNR_morgan
+
+# Ignore pickles
+*.pickle
+*.pkl

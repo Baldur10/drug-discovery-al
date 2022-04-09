@@ -1,0 +1,28 @@
+Assay_id = 688239
+picked = 3299
+```
+iterations: 30
+#only_new = False
+Truncated_SVD = False
+```
+index,assay_id,squared_pearson_trn,squared_pearson_tst,assay_length_trn,assay_length_tst,assay_length_total
+1487,688239,0.009126389,0.007470491,65984,21995,87979
+
+Time to reach assay = 5.08 minutes
+
+Time taken during training cycle(subset) = 20604 seconds = 5.7 hours
+Time taken during training cycle(no-subset) = 40 hours
+
+```
+iterations: 30
+#only_new = New
+Truncated_SVD = True
+```
+index,assay_id,squared_pearson_trn,squared_pearson_tst,assay_length_trn,assay_length_tst,assay_length_total
+1487,688239,0.009126389,0.007470491,65984,21995,87979
+
+Time to reach assay = 5.08 minutes
+
+Time taken during training cycle(subset) = 720 seconds
+Time taken during training cycle(no-subset) = 12587 seconds
+
