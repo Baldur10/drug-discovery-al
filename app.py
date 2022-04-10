@@ -2,18 +2,23 @@ from email import utils
 from fileinput import filename
 import os
 from tkinter.font import names
+from turtle import shape
+from matplotlib.pyplot import axis
 import numpy as np
 import pandas as pd
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
+from scripts import nnr_custom
 
 import pickle
 import time
+import json
 
 from rdkit import Chem
 from rdkit.Chem import RDKFingerprint
 from rdkit.Chem import rdMolDescriptors as rdmd
+
 
 # Create flask app
 flask_app = Flask(__name__,static_folder='./templates/static')
@@ -51,6 +56,11 @@ def result():
         
         if (params_list['model-select']=='GPR'):
             model_variable = "Matern()"
+        elif (params_list['model-select']=='RFR'):
+            model_variable = "RandomForestRegressor()"
+        elif (params_list['model-select']=='NNR'):
+            model_variable = "BasicNNR()"
+        
         model_path = "models/{}_morgan/{}_{}_{}.pickle".format(params_list['model-select'], model_variable, params_list["accFunction-select"], params_list['assayID'])
 
         try:
@@ -59,24 +69,35 @@ def result():
         except FileNotFoundError as e:
             return render_template('error.html', error=e)
 
-        predictions = model.predict(np.array(fingerprint_df))
+        predictions = model.predict(np.array(fingerprint_df).astype(np.float32))
+        predictions_rounded = []
         results = []
         item_count = 0
-
+        
         for element in predictions:
+            potency = round(element[0],2) if params_list['model-select']=='NNR' else round(element,2)
+
             interim_result = {
+                "count" : item_count,
                 "mol" : '{}'.format(file_content['smiles'].iloc[item_count]),
-                "potency" : round(element,2)
+                "potency" : potency
             }
             results.append(interim_result)
+            predictions_rounded.append(potency)
             item_count+=1
         
-        results_df = pd.concat(file_content,pd.DataFrame(round(predictions,2), columns=['output_expt_pIC50']), axis=0)
-        print('\n',results_df,'\n')
-        
-        results_df.to_csv('data/data_output/{}.csv'.format(filename), index=False)
-        results_df.to_parquet('data/data_output/{}.parquet'.format(filename), index=False)
-        
+        predictions_rounded = pd.DataFrame(predictions_rounded, columns=['output_expt_pIC50'])
+        # try:
+        results_df = pd.concat([file_content,predictions_rounded], axis=1)
+        # except:
+        #     print('\n',file_content,'\n', type(file_content), '\n', file_content.shape)
+        #     print('\n',predictions_rounded, type(predictions_rounded), '\n', predictions_rounded.shape)
+        #print('\n',results_df,'\n')
+
+        current_time = time.time()
+        results_df.to_csv('data/data_output/{}_{}.csv'.format(model_variable,current_time), index=False)
+        results_df.to_parquet('data/data_output/{}_{}.parquet'.format(model_variable,current_time), index=False)
+
         return render_template('predictions.html', results = results)
 
 if __name__ == "__main__":
