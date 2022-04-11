@@ -15,7 +15,7 @@ sys.path.insert(0, './scripts')
 import nnr_custom
 
 import pickle
-import time
+import datetime
 import json
 
 from rdkit import Chem
@@ -42,7 +42,7 @@ def Home():
 @flask_app.route("/result", methods=['POST'])
 def result():
     if request.method == 'POST':
-        # try:
+
         file = request.files['smilesFile']
         params_list = request.form.to_dict()
         filename = secure_filename(file.filename)
@@ -63,7 +63,7 @@ def result():
             model_variable = "RandomForestRegressor()"
         elif (params_list['model-select']=='NNR'):
             model_variable = "BasicNNR()"
-        
+
         model_path = "models/{}_morgan/{}_{}_{}.pickle".format(params_list['model-select'], model_variable, params_list["accFunction-select"], params_list['assayID'])
 
         try:
@@ -91,14 +91,10 @@ def result():
             item_count+=1
         
         predictions_rounded = pd.DataFrame(predictions_rounded, columns=['output_expt_pIC50'])
-        # try:
+
         results_df = pd.concat([file_content,predictions_rounded], axis=1)
-        # except:
-        #     print('\n',file_content,'\n', type(file_content), '\n', file_content.shape)
-        #     print('\n',predictions_rounded, type(predictions_rounded), '\n', predictions_rounded.shape)
-        print('\n',results_df,'\n')
-        print('\n',results,'\n')
-        current_time = time.gmtime()
+
+        current_time = datetime.datetime.now()
         results_df.to_csv('data/data_output/{}_{}.csv'.format(model_variable,current_time), index=False)
         results_df.to_parquet('data/data_output/{}_{}.parquet'.format(model_variable,current_time), index=False)
 
