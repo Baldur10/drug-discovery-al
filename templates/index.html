@@ -15,6 +15,7 @@
         <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="{{url_for('static',filename='css/styles.css')}}" rel="stylesheet" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -97,13 +98,7 @@
                             <div class="form-group">
                                 <!-- Acquisition Function input-->
                                 <select class="form-control" id="accFunction-select" name="accFunction-select">
-                                    <option value="">-- Select Acquisition Function --</option>
-                                    <option value="max_UCB">Max Upper Confidence Bound</option>
-                                    <option value="max_PI">Max Potential Improvement</option>
-                                    <option value="max_EI">Max Expected Improvement</option>
-                                    <option value="random">Random Sampling</option>
-                                    <option value="equivalent">Equivalent Sampling</option>
-                                    <option value="product">Product Sampling</option>
+                                    <option value="">-- Select Acquisition Functions --</option>
                                 </select>
                             </div>
                             <br>
@@ -165,3 +160,42 @@
         <script src="{{url_for('static',filename='js/scripts.js')}}"></script>
     </body>
 </html>
+<script type="text/javascript">
+    var _data = {
+        "GPR" : {
+            "max_UCB" : "Maximum Upper Confidence Bound",
+            "max_PI" : "Maximum Potential Improvement",
+            "max_EI" : "Maximum Expected Improvement"
+        },
+        "RFR" : {
+            "max_UCB" : "Maximum Upper Confidence Bound",
+            "max_PI" : "Maximum Potential Improvement",
+            "max_EI" : "Maximum Expected Improvement"
+        },
+        "NNR" : {
+            "random" : "Random Sampling",
+            "equivalent" : "Equivalent Sampling",
+            "product" : "Product Sampling"
+        }
+    };
+    $(document).ready(function(){
+        console.log('Intialised function');
+        $('#model-select').on('change', function(e){
+            var source = $(this),
+            val = $.trim(source.val()),
+            target = $('#accFunction-select');
+
+        $(target).empty();
+        console.log("The json object retrieved is " + target);
+
+        if(typeof(_data[val]) != "undefined"){
+            var options = (typeof(_data[val]) != "undefined") ? _data[val] : {};
+            $('<option>-- Select Acquisition Functions --</option>').appendTo(target);
+            $.each( options , function(index, value) {
+                $('<option value="' + index + '">' + value + '</option>').appendTo(target);
+                console.log("Successfully replaced form objects");
+            });
+        }
+    });
+});
+</script>

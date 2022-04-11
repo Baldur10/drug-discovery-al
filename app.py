@@ -9,7 +9,10 @@ import pandas as pd
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
-from scripts import nnr_custom
+
+import sys
+sys.path.insert(0, './scripts')
+import nnr_custom
 
 import pickle
 import time
@@ -76,11 +79,12 @@ def result():
         
         for element in predictions:
             potency = round(element[0],2) if params_list['model-select']=='NNR' else round(element,2)
+            print('potency is of {} and type {}'.format(potency, type(potency)))
 
             interim_result = {
                 "count" : item_count,
                 "mol" : '{}'.format(file_content['smiles'].iloc[item_count]),
-                "potency" : potency
+                "potency" : round(potency.astype(np.float64),2)
             }
             results.append(interim_result)
             predictions_rounded.append(potency)
@@ -92,9 +96,9 @@ def result():
         # except:
         #     print('\n',file_content,'\n', type(file_content), '\n', file_content.shape)
         #     print('\n',predictions_rounded, type(predictions_rounded), '\n', predictions_rounded.shape)
-        #print('\n',results_df,'\n')
-
-        current_time = time.time()
+        print('\n',results_df,'\n')
+        print('\n',results,'\n')
+        current_time = time.gmtime()
         results_df.to_csv('data/data_output/{}_{}.csv'.format(model_variable,current_time), index=False)
         results_df.to_parquet('data/data_output/{}_{}.parquet'.format(model_variable,current_time), index=False)
 
