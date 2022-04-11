@@ -94,9 +94,9 @@ def result():
 
         results_df = pd.concat([file_content,predictions_rounded], axis=1)
 
-        current_time = datetime.datetime.now()
-        results_df.to_csv('data/data_output/{}_{}.csv'.format(model_variable,current_time), index=False)
-        results_df.to_parquet('data/data_output/{}_{}.parquet'.format(model_variable,current_time), index=False)
+        current_time = datetime.datetime.now(datetime.timezone.utc)
+        results_df.to_csv('data/data_output/{}_{}.csv'.format(model_variable,filename), index=False)
+        results_df.to_parquet('data/data_output/{}_{}.parquet'.format(model_variable,filename), index=False)
 
         return render_template('predictions.html', results = results)
 
